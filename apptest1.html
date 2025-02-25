@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Would You Rather...?</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(to bottom right, #ff9966, #ff5e62);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: rainbow 5s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { text-shadow: 2px 2px 4px red; }
+            25% { text-shadow: 2px 2px 4px orange; }
+            50% { text-shadow: 2px 2px 4px yellow; }
+            75% { text-shadow: 2px 2px 4px green; }
+            100% { text-shadow: 2px 2px 4px blue; }
+        }
+
+        #question-container {
+            margin: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            max-width: 600px;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #question-text {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        #generate-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        #generate-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        .bg-circle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 6s linear infinite;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 50px;
+            height: 50px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 80px;
+            height: 80px;
+            top: 30%;
+            right: 5%;
+            animation-delay: 2s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 30px;
+            height: 30px;
+            bottom: 15%;
+            left: 20%;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); opacity: 0.5;}
+            25% { transform: translate(20px, -10px); opacity: 0.7;}
+            50% { transform: translate(0, -20px); opacity: 1;}
+            75% { transform: translate(-10px, -10px); opacity: 0.8;}
+            100% { transform: translate(0, 0); opacity: 0.5;}
+        }
+
+        @media (max-width: 600px) {
+            #question-text {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Would You Rather...?</h1>
+    <div id="question-container">
+        <p id="question-text">Loading question...</p>
+    </div>
+    <button id="generate-button">Generate Question</button>
+
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+
+    <script>
+        const questionText = document.getElementById('question-text');
+        const generateButton = document.getElementById('generate-button');
+
+        const questions = [
+            "Would you rather have unlimited bacon or unlimited pizza?",
+            "Would you rather always be hot or always be cold?",
+            "Would you rather be able to fly or be invisible?",
+            "Would you rather live in a world with no internet or no music?",
+            "Would you rather always be 10 minutes late or 20 minutes early?",
+            "Would you rather lose your sense of taste or your sense of smell?",
+            "Would you rather have a photographic memory or be able to speak every language?",
+            "Would you rather be able to control the weather or read minds?",
+            "Would you rather have a pet dragon or a pet unicorn?",
+            "Would you rather be the smartest person in the world or the most athletic?",
+            "Would you rather be able to teleport or control time?",
+            "Would you rather live in the past or the future?",
+            "Would you rather be rich and famous or happy and unknown?",
+            "Would you rather have a rewind button or a pause button on your life?",
+            "Would you rather always have to sing or always have to dance?",
+            "Would you rather be able to talk to animals or speak every human language?",
+            "Would you rather have a lifetime supply of your favorite food or a lifetime supply of your favorite drink?",
+            "Would you rather be able to breathe underwater or fly?",
+            "Would you rather have super strength or super speed?",
+            "Would you rather have a clone of yourself or a robot butler?",
+            "Would you rather be the size of an ant or the size of a giant?",
+            "Would you rather have a third arm or a third leg?",
+            "Would you rather have a nose that can smell everything or eyes that can see everything?",
+            "Would you rather be able to stop time or rewind time?",
+            "Would you rather be able to predict the future or change the past?",
+            "Would you rather live in a video game or a book?",
+            "Would you rather be the hero or the villain?",
+            "Would you rather be trapped in a Groundhog Day scenario or have to relive your worst memory every day?",
+            "Would you rather have to wear the same outfit every day for a year or never be able to wear your favorite outfit again?",
+            "Would you rather have to eat only your least favorite food for a year or never be able to eat your favorite food again?",
+            "Would you rather lose all your photos or all your music?",
+            "Would you rather have to give up your phone for a year or your computer for a year?",
+            "Would you rather be able to talk to ghosts or see into the future?",
+            "Would you rather have wings or gills?",
+            "Would you rather have a tail or horns?",
+            "Would you rather be covered in fur or scales?",
+            "Would you rather have no teeth or no hair?",
+            "Would you rather have to live in a desert or in the arctic?",
+            "Would you rather be able to control fire or water?",
+            "Would you rather be able to fly but only at night or be able to teleport but only to places you've already been?",
+            "Would you rather be able to talk to animals but only in rhymes or be able to understand any language but only when it's written down?",
+            "Would you rather have to fight a bear or a shark?",
+            "Would you rather have to live without music or without movies?",
+            "Would you rather be able to run at 100 miles per hour or jump 50 feet in the air?",
+            "Would you rather have to live in a world without laughter or without art?",
+            "Would you rather be able to turn invisible or be able to read minds?",
+            "Would you rather be able to teleport or control time?",
+            "Would you rather have a pet dragon or a pet unicorn?",
+            "Would you rather be the smartest person in the world or the most athletic?",
+            "Would you rather be able to control the weather or read minds?",
+            "Would you rather live in the past or the future?",
+            "Would you rather be rich and famous or happy and unknown?",
+            "Would you rather have a rewind button or a pause button on your life?",
+            "Would you rather always have to sing or always have to dance?",
+            "Would you rather be able to talk to animals or speak every human language?",
+            "Would you rather have a lifetime supply of your favorite food or a lifetime supply of your favorite drink?",
+            "Would you rather be able to breathe underwater or fly?",
+            "Would you rather have super strength or super speed?",
+            "Would you rather have a clone of yourself or a robot butler?",
+            "Would you rather be the size of an ant or the size of a giant?",
+            "Would you rather have a third arm or a third leg?",
+            "Would you rather have a nose that can smell everything or eyes that can see everything?",
+            "Would you rather be able to stop time or rewind time?",
+            "Would you rather be able to predict the future or change the past?",
+            "Would you rather live in a video game or a book?",
+            "Would you rather be the hero or the villain?",
+            "Would you rather be trapped in a Groundhog Day scenario or have to relive your worst memory every day?",
+            "Would you rather have to wear the same outfit every day for a year or never be able to wear your favorite outfit again?",
+            "Would you rather have to eat only your least favorite food for a year or never be able to eat your favorite food again?",
+            "Would you rather lose all your photos or all your music?",
+            "Would you rather have to give up your phone for a year or your computer for a year?",
+            "Would you rather be able to talk to ghosts or see into the future?",
+            "Would you rather have wings or gills?",
+            "Would you rather have a tail or horns?",
+            "Would you rather be covered in fur or scales?",
+            "Would you rather have no teeth or no hair?",
+            "Would you rather have to live in a desert or in the arctic?",
+            "Would you rather be able to control fire or water?",
+            "Would you rather be able to fly but only at night or be able to teleport but only to places you've already been?",
+            "Would you rather be able to talk to animals but only in rhymes or be able to understand any language but only when it's written down?",
+            "Would you rather have to fight a bear or a shark?",
+            "Would you rather have to live without music or without movies?",
+            "Would you rather be able to run at 100 miles per hour or jump 50 feet in the air?",
+            "Would you rather have to live in a world without laughter or without art?",
+            "Would you rather be able to turn invisible or be able to read minds?"
+   
+        ];
+
+        generateButton.addEventListener('click', () => {
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            questionText.textContent = questions[randomIndex];
+        });
+    </script>
+</body>
+</html>
